@@ -21,10 +21,20 @@ public class ArraysG1 {
         }
     }
 
+    public static int[][] matrizF5(int tam, int numI){
+        int [][] m=new int[tam][tam];
+        for (int f = 0; f < m.length; f++) {//4
+            for (int c = m[0].length-1; c >=m[0].length-1-f ; c--) { //c=0  c=0
+                m[f][c]=numI;
+                numI++;
+            }
+        }
+        return m;
+    }
     public static void main(String[] args) {
-        imprimeVector(ejemploVector());
+        //imprimeVector(ejemploVector());
         System.out.println("");
-        int[][] m={{2,3},{4,6}, {9,10}};
-        imprimeMatriz(m);
+        //int[][] m={{2,3},{4,6}, {9,10}};
+        imprimeMatriz(matrizF5(5,0));
     }
 }
