@@ -7,7 +7,6 @@ public class Producto {
     String nombre;
     double precio;
     int stock;
-    double cantidad;
     double igv;
 
     //Constructor, si hay mas de un constructor se denomina sobre carga de constructores
