@@ -2,7 +2,8 @@ package pe.edu.upeu.conceptosuml.asociacion;
 
 public class Profesor {
    String nombre;
-   Especialidad especialidad;
+   Especialidad especialidad;//Relacion de asociacion
+
 
    Profesor(String nombre, Especialidad especialidad){
        this.nombre = nombre;

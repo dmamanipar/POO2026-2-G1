@@ -1,6 +1,9 @@
 package pe.edu.upeu.conceptosuml.dependencia;
 
+import pe.edu.upeu.conceptosuml.asociacion.Especialidad;
+
 public class Cliente {
+
     public void realizarPago(Paypal paypal, double monto){
         paypal.pagar(monto);
     }
