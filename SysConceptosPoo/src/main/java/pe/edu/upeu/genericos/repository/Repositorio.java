@@ -1,9 +1,10 @@
-package pe.edu.upeu.genericos;
+package pe.edu.upeu.genericos.repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Repositorio<T> {
+
     private final List<T> elementos = new ArrayList<>();
     public void guardar(T elemento) {
         elementos.add(elemento);

@@ -1,5 +1,8 @@
-package pe.edu.upeu.genericos;
+package pe.edu.upeu.genericos.modelo;
 
+import lombok.Data;
+
+@Data
 public class Producto {
     String codigo;
     String nombre;

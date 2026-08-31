@@ -21,12 +21,24 @@ public class ClaseExterna {
             }
             return resul;
         }
+
+        class SubClaseInterna{
+            void mostrarSaludo(){
+                System.out.println("Soy sub clase Interna");
+            }
+        }
     }
 
     public static void main(String[] args) {
         char[] oper={'+', '-', '/', '*'};
         ClaseExterna obj=new ClaseExterna(10, 6,'+');
         ClaseInterna objI=obj.new ClaseInterna();
+        double re=objI.operacion(7,5,'+');
+        System.out.println(re);
+
+        ClaseInterna.SubClaseInterna subObjI=objI.new SubClaseInterna();
+        subObjI.mostrarSaludo();
+
         for (char o:oper) {
             double resul = objI.operacion(obj.num1, obj.num2, o);
             System.out.println("Resultado con "+o+":" +resul);

@@ -1,5 +1,8 @@
-package pe.edu.upeu.genericos;
+package pe.edu.upeu.genericos.modelo;
 
+import lombok.Data;
+
+@Data
 public class Cliente {
     String nombre;
     String dni;
