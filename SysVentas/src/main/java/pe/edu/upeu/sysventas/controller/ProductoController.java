@@ -17,7 +17,7 @@ public class ProductoController {
     private final IUnidadMedidaService ums;
 
     @FXML ComboBox<ComboBoxOption> cbxTipoProducto;
-    @FXML ComboBox<ComboBoxOption> cbxCategoria;
+    @FXML ComboBox<ComboBoxOption> cbxCategoria, cbxMarca, cbxUnidadMedida;
 
     @FXML
     public void initialize(){
@@ -25,6 +25,8 @@ public class ProductoController {
         cbxTipoProducto.getItems().addAll(ps.listarTipoProducto());
 
         cbxCategoria.getItems().addAll(cs.lisCategoria());
+        cbxMarca.getItems().addAll(ms.listarCombobox());
+        cbxUnidadMedida.getItems().addAll(ums.listarCombobox());
     }
 
 }
