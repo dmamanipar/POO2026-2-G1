@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import pe.edu.upeu.sysventas.config.AppContext;
+import pe.edu.upeu.sysventas.controller.ProductoController;
 
 import java.io.IOException;
 

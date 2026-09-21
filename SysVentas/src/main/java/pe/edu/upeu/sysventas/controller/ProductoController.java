@@ -1,14 +1,23 @@
 package pe.edu.upeu.sysventas.controller;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import pe.edu.upeu.sysventas.components.ColumnInfo;
 import pe.edu.upeu.sysventas.components.TableViewHelper;
+import pe.edu.upeu.sysventas.components.Toast;
+import pe.edu.upeu.sysventas.components.ToltipCustom;
 import pe.edu.upeu.sysventas.dto.ComboBoxOption;
 import pe.edu.upeu.sysventas.enums.TipoProducto;
 import pe.edu.upeu.sysventas.model.Producto;
@@ -17,8 +26,8 @@ import pe.edu.upeu.sysventas.service.IMarcaService;
 import pe.edu.upeu.sysventas.service.IProductoService;
 import pe.edu.upeu.sysventas.service.IUnidadMedidaService;
 
-import java.util.LinkedHashMap;
-import java.util.List;
+
+import java.util.*;
 import java.util.function.Consumer;
 
 @RequiredArgsConstructor
@@ -39,6 +48,13 @@ public class ProductoController {
     Producto formulario;
     Long idProductoCE = 0L;
 
+    @FXML Label lbnMsg;
+    @FXML private AnchorPane miContenedor;
+    Stage stage;
+    private Validator validator;
+    private final ToltipCustom ttc=new ToltipCustom();
+
+
     @FXML
     public void initialize(){
         System.out.println("Holasss");
@@ -48,20 +64,28 @@ public class ProductoController {
         cbxMarca.getItems().addAll(ms.listarCombobox());
         cbxUnidadMedida.getItems().addAll(ums.listarCombobox());
 
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
         TableViewHelper<Producto> tableViewHelper=new TableViewHelper<>();
         LinkedHashMap<String, ColumnInfo> columns=new LinkedHashMap<>();
         columns.put("ID Prod.", new ColumnInfo("idProducto", 60.0));
         columns.put("Tipo Producto", new ColumnInfo("tipoProducto", 150.0));
         columns.put("Nombre", new ColumnInfo("nombre", 200.0));
-        Producto producto;
+        columns.put("P. Unitario", new ColumnInfo("pu", 150.0));
+        columns.put("Utilidad", new ColumnInfo("utilidad", 100.0));
+        columns.put("Marca", new ColumnInfo("idMarca.nombre", 200.0));
+        columns.put("Categoria", new ColumnInfo("idCategoria.nombre", 200.0));
+
         Consumer<Producto> updateAction= p->{
             editForm(p);
             idProductoCE=p.getIdProducto();
         };
         Consumer<Producto> deleteAction= p->{
             ps.delete(p.getIdProducto());
-            //double w = stage.getWidth() / 1.5, h = stage.getHeight() / 2;
-            //Toast.showToast(stage, "Se eliminó correctamente!!", 2000, w, h);
+            Stage stage = (Stage) miContenedor.getScene().getWindow();
+            double w = stage.getWidth() / 1.5, h = stage.getHeight() / 2;
+            Toast.showToast(stage, "Se eliminó correctamente!!", 2000, w, h);
             listar();
         };
 
@@ -79,6 +103,10 @@ public class ProductoController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    public void setStage(Stage stage) {
+        this.stage = stage;
+        System.out.println("Llego"+stage.getTitle());
     }
 
     @FXML
@@ -107,18 +135,7 @@ public class ProductoController {
                 : cbxUnidadMedida.getSelectionModel().getSelectedItem().getKey();
         formulario.setIdUnidad(idxUM.equals("0") ? null : ums.findById(Long.parseLong(idxUM)));
 
-        if(idProductoCE==0) {
-            ps.save(formulario);
-        }else{
-            formulario.setIdProducto(idProductoCE);
-            ps.update(idProductoCE, formulario);
-            idProductoCE=0L;
-        }
-        clearForm();
-
-        listar();
-
-        /* Set<ConstraintViolation<Producto>> violaciones = validator.validate(formulario);
+        Set<ConstraintViolation<Producto>> violaciones = validator.validate(formulario);
         List<ConstraintViolation<Producto>> violacionesOrdenadas = violaciones.stream()
                 .sorted(Comparator.comparing(v -> v.getPropertyPath().toString())).toList();
 
@@ -127,8 +144,64 @@ public class ProductoController {
 
         } else {
             mostrarErroresValidacion(violacionesOrdenadas);
-        } */
+        }
 
+    }
+
+    private void mostrarErroresValidacion(List<ConstraintViolation<Producto>> violaciones) {
+        limpiarError();
+        Map<String, Control> campos = new LinkedHashMap<>();
+        campos.put("nombre", txtNombreProducto);
+        campos.put("tipoProducto", cbxTipoProducto);
+        campos.put("pu", txtPUnit);
+        campos.put("puold", txtPUnitOld);
+        campos.put("utilidad", txtUtilidad);
+        campos.put("stock", txtStock);
+        campos.put("stockold", txtStockOld);
+        campos.put("idMarca", cbxMarca);
+        campos.put("idCategoria", cbxCategoria);
+        campos.put("idUnidad", cbxUnidadMedida);
+
+        LinkedHashMap<String, String> erroresOrdenados = new LinkedHashMap<>();
+        final Control[] primerCtrl = {null};
+        for (String campo : campos.keySet()) {
+            violaciones.stream()
+                    .filter(v -> v.getPropertyPath().toString().equals(campo))
+                    .findFirst().ifPresent(v -> {
+
+                        erroresOrdenados.put(campo, v.getMessage());
+
+                        Control c = campos.get(campo);
+                        if (c != null && !c.getStyleClass().contains("text-field-error")){
+                            //c.getStyleClass().add("text-field-error");
+                            if (c != null) ttc.marcarError(c, v.getMessage().trim());
+                        }
+                        if (primerCtrl[0] == null) primerCtrl[0] = c;
+                    });
+        }
+        if (!erroresOrdenados.isEmpty()) {
+            lbnMsg.setText(erroresOrdenados.entrySet().iterator().next().getValue());
+            lbnMsg.setStyle("-fx-text-fill: red; -fx-font-size: 16px;");
+            if (primerCtrl[0] != null) Platform.runLater(primerCtrl[0]::requestFocus);
+        }
+    }
+
+    private void procesarFormulario() {
+        lbnMsg.setText("Formulario válido");
+        lbnMsg.setStyle("-fx-text-fill: green; -fx-font-size: 16px;");
+        Stage stage = (Stage) miContenedor.getScene().getWindow();
+
+        limpiarError();
+        double w = stage.getWidth() / 1.5, h = stage.getHeight() / 2;
+        if (idProductoCE > 0L) {
+            formulario.setIdProducto(idProductoCE);
+            ps.update(idProductoCE, formulario);
+            Toast.showToast(stage, "Se actualizó correctamente!!", 2000, w, h);
+        } else {
+            ps.save(formulario);
+            Toast.showToast(stage, "Se guardó correctamente!!", 2000, w, h);
+        }
+        clearForm(); listar();
     }
 
     private double parseDoubleSafe(String value) {
@@ -174,7 +247,7 @@ public class ProductoController {
                         txtPUnit, txtPUnitOld, txtUtilidad,
                         txtStock, txtStockOld, cbxMarca, cbxCategoria, cbxUnidadMedida)
                 .forEach(c -> {c.getStyleClass().remove("text-field-error");
-                   // ttc.limpiarCampo(c);
+                    ttc.limpiarCampo(c);
                 });
     }
 
