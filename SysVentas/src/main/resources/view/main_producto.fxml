@@ -17,7 +17,7 @@
                      </font>
                   </Label>
                   <Label layoutX="295.0" layoutY="44.0" text="Filtrar Productos" />
-                  <TextField layoutX="295.0" layoutY="69.0" />
+                  <TextField fx:id="txtFiltroDato" layoutX="295.0" layoutY="69.0" />
                   <Button layoutX="457.0" layoutY="69.0" mnemonicParsing="false" text="Buscar" />
                </children>
                <VBox.margin>
@@ -56,7 +56,7 @@
                               <Label text="Tipo Producto" GridPane.rowIndex="1" />
                               <ComboBox fx:id="cbxTipoProducto" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label text="Nombre Producto" GridPane.rowIndex="2" />
-                              <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtNombreProducto" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
                               <Label text="P. Unit" GridPane.rowIndex="3" />
                               <Label text="Utilidad" GridPane.rowIndex="4" />
                               <Label text="Stock" GridPane.rowIndex="5" />
@@ -73,7 +73,7 @@
                               <ComboBox fx:id="cbxCategoria" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="6" />
                               <ComboBox fx:id="cbxMarca" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7" />
                               <ComboBox fx:id="cbxUnidadMedida" maxWidth="1.7976931348623157E308" prefWidth="150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="8" />
-                              <Button mnemonicParsing="false" text="Guardar" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <Button mnemonicParsing="false" onAction="#validarFormulario" text="Guardar" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                               <Button mnemonicParsing="false" text="Cancelar" GridPane.columnIndex="2" GridPane.rowIndex="9" />
                            </children>
                            <padding>
