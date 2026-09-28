@@ -38,6 +38,7 @@ public class Producto {
     @NotNull(message = "El stock anterior del producto es obligatorio")
     @PositiveOrZero(message = "El stock anterior del producto debe ser positivo")
     private Double stockold;
+
     @NotNull(message = "La categoria del producto es obligatoria")
     private Categoria idCategoria;
     @NotNull(message = "La marca del producto es obligatoria")
