@@ -8,5 +8,6 @@ public class Cliente {
     String dniruc;
     String nombres;
     String repLegal;
+    String direccion;
     TipoDocumento tipoDocumento;
 }
