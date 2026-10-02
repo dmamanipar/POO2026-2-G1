@@ -15,7 +15,7 @@ public class SysVentas extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         AppContext context=AppContext.getInstance();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/main_producto.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/maingui.fxml"));
         fxmlLoader.setControllerFactory(context::getBean);
         Screen screen=Screen.getPrimary();
         Rectangle2D r2d=screen.getVisualBounds();
