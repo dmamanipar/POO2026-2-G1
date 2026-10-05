@@ -6,6 +6,13 @@ module pe.edu.upeu.sysventas {
     requires com.dlsc.formsfx;
     requires static lombok;
 
+    requires org.postgresql.jdbc;
+    requires java.sql;
+    requires java.naming;
+    requires org.slf4j;
+    requires com.zaxxer.hikari;
+
+
     requires jakarta.validation;
     opens pe.edu.upeu.sysventas.controller to javafx.fxml;
     opens pe.edu.upeu.sysventas to javafx.fxml;
