@@ -21,9 +21,7 @@ public class MarcaServiceImp extends CrudGenericoServiceImp<Marca, Long> impleme
 
     @Override
     public List<ComboBoxOption> listarCombobox() {
-        if(marcaRepository.findAll().isEmpty()) {
-            marcaRepository.seedData();
-        }
+
         List<ComboBoxOption> listar = new ArrayList<>();
         for (Marca m : marcaRepository.findAll()) {
             ComboBoxOption cb = new ComboBoxOption();
