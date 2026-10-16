@@ -13,6 +13,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import pe.edu.upeu.sysventas.components.StageManager;
+import pe.edu.upeu.sysventas.components.Toast;
 import pe.edu.upeu.sysventas.config.AppContext;
 import pe.edu.upeu.sysventas.config.DatabaseConfig;
 import pe.edu.upeu.sysventas.dto.SessionManager;
@@ -42,7 +43,7 @@ public class LoginController {
                                   abrirMain(e, usu);
                               },
                               ()->{
-                                  System.out.println("Error.....");
+                                    mensajeError(e,"Error en las credenciales...intente nuevamente!!");
                               });
 
           } catch (Exception ex) {
@@ -51,6 +52,11 @@ public class LoginController {
       }
 
 
+      public void mensajeError(ActionEvent e, String msg){
+          Stage stage= (Stage) ((Node)e.getSource()).getScene().getWindow();
+          double w = stage.getWidth() / 1.5, h = stage.getHeight() / 2;
+          Toast.showToast(stage, msg, "#FEA1B6", 2000, w, h);
+      }
 
       private void abrirMain(ActionEvent event, Usuario usu){
           try {
@@ -73,7 +79,8 @@ public class LoginController {
               stage.setTitle("Sistema de ventas!");
               stage.setResizable(true);
               stage.setScene(scene);
-
+              stage.setX(r2d.getMinX());
+              stage.setY(r2d.getMinY());
               StageManager.setPrimaryStage(stage);
               stage.setWidth( r2d.getWidth());
               stage.setHeight(r2d.getHeight());
