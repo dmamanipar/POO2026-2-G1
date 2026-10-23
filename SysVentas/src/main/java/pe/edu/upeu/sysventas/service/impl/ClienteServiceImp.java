@@ -34,7 +34,7 @@ public class ClienteServiceImp extends CrudGenericoServiceImp<Cliente, String>
                 ModeloDataAutocomplet data = new ModeloDataAutocomplet();
                 data.setIdx(cliente.getDniruc());
                 data.setNameDysplay(cliente.getNombres());
-                data.setOtherData(cliente.getTipoDocumento().name());
+                data.setOtherData(cliente.getTipoDocumento().name()+";"+cliente.getDireccion());
                 listarclientes.add(data);
             }
         } catch (Exception e) {

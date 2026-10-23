@@ -1,7 +1,9 @@
 package pe.edu.upeu.sysventas.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

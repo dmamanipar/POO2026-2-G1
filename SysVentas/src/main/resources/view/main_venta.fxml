@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.edu.upeu.sysventas.controller.VentaController">
+<AnchorPane fx:id="miContenedor" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pe.edu.upeu.sysventas.controller.VentaController">
    <children>
       <AnchorPane AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
          <children>
@@ -24,7 +24,7 @@
                <children>
                   <Label text="DNI/Ruc de Cliente" />
                   <TextField fx:id="autocompCliente" GridPane.rowIndex="1" />
-                  <Button fx:id="btnFormCliente" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Buscar" GridPane.columnIndex="1" GridPane.rowSpan="2147483647">
+                  <Button fx:id="btnFormCliente" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscarClienteCdni" text="Buscar" GridPane.columnIndex="1" GridPane.rowSpan="2147483647">
                      <GridPane.margin>
                         <Insets left="5.0" />
                      </GridPane.margin>
@@ -59,7 +59,7 @@
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <Button fx:id="btnRegCliente" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Add" GridPane.columnIndex="5" GridPane.rowSpan="2147483647">
+                  <Button fx:id="btnRegCliente" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#guardarCliente" text="Add" GridPane.columnIndex="5" GridPane.rowSpan="2147483647">
                      <GridPane.margin>
                         <Insets left="5.0" right="5.0" />
                      </GridPane.margin>
@@ -126,7 +126,7 @@
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </Label>
-                  <TextField fx:id="cantidadPro" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                  <TextField fx:id="cantidadPro" onKeyTyped="#calcularPT" GridPane.columnIndex="4" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets left="5.0" />
                      </GridPane.margin>
@@ -151,7 +151,7 @@
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <Button fx:id="btnRegCarrito" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Add" GridPane.columnIndex="7" GridPane.rowSpan="2147483647">
+                  <Button fx:id="btnRegCarrito" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#registarPCarrito" text="Add" GridPane.columnIndex="7" GridPane.rowSpan="2147483647">
                      <GridPane.margin>
                         <Insets left="5.0" right="5.0" />
                      </GridPane.margin>
@@ -165,12 +165,7 @@
       </AnchorPane>
       <AnchorPane layoutX="14.0" layoutY="163.0" maxWidth="1.7976931348623157E308" prefHeight="200.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
          <children>
-            <TableView fx:id="tableView" layoutX="14.0" layoutY="14.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-              <columns>
-                <TableColumn prefWidth="75.0" text="C1" />
-                <TableColumn prefWidth="75.0" text="C2" />
-              </columns>
-            </TableView>
+            <TableView fx:id="tableView" layoutX="14.0" layoutY="14.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
          </children>
       </AnchorPane>
       <AnchorPane layoutX="14.0" layoutY="363.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
@@ -224,7 +219,7 @@
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <Button fx:id="btnRegVenta" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Registrar Venta" GridPane.columnIndex="4" GridPane.rowSpan="2147483647">
+                  <Button fx:id="btnRegVenta" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#registrarVenta" text="Registrar Venta" GridPane.columnIndex="4" GridPane.rowSpan="2147483647">
                      <GridPane.margin>
                         <Insets left="5.0" right="5.0" />
                      </GridPane.margin>
