@@ -17,6 +17,9 @@ module pe.edu.upeu.sysventas {
 
     requires jakarta.validation;
     requires org.jsoup;
+    requires java.desktop;
+    requires escpos.coffee;
+    requires com.github.librepdf.openpdf;
     opens pe.edu.upeu.sysventas.controller to javafx.fxml;
     opens pe.edu.upeu.sysventas to javafx.fxml;
     opens pe.edu.upeu.sysventas.model;

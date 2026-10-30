@@ -1,6 +1,11 @@
 package pe.edu.upeu.sysventas.controller;
 
 
+import com.github.anastaciocintra.escpos.EscPos;
+import com.github.anastaciocintra.escpos.EscPosConst;
+import com.github.anastaciocintra.escpos.Style;
+import com.github.anastaciocintra.escpos.barcode.QRCode;
+import com.github.anastaciocintra.output.PrinterOutputStream;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +18,7 @@ import pe.edu.upeu.sysventas.components.*;
 import pe.edu.upeu.sysventas.dto.ModeloDataAutocomplet;
 import pe.edu.upeu.sysventas.dto.PersonaDto;
 import pe.edu.upeu.sysventas.dto.SessionManager;
+import pe.edu.upeu.sysventas.dto.comprobante.Comprobante;
 import pe.edu.upeu.sysventas.enums.TipoDocumento;
 import pe.edu.upeu.sysventas.enums.TipoProducto;
 import pe.edu.upeu.sysventas.exception.ModelNotFoundException;
@@ -22,7 +28,9 @@ import pe.edu.upeu.sysventas.model.Venta;
 import pe.edu.upeu.sysventas.model.VentaDetalle;
 import pe.edu.upeu.sysventas.service.*;
 import pe.edu.upeu.sysventas.utils.ConsultaDNI;
+import pe.edu.upeu.sysventas.utils.PrinterManager;
 
+import javax.print.PrintService;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -336,10 +344,108 @@ public class VentaController {
             listar();
             idX.setDetalleVenta(vdList);
 
+            Comprobante comprobante = daoV.generarComprobante(idX);
+            try {
+                if(comprobante!=null && dd.size()>0) {
+                    mostrarVisorComprobante(comprobante);
+                    print(Long.parseLong(String.valueOf(idX.getId())));
+                }else{
+                    Stage stage = StageManager.getPrimaryStage();
+                    double with=stage.getMaxWidth()/2;
+                    Toast.showToast(stage, "Error al generar comprobante", 2000, with, 50);
+                }
+            }catch (Exception e){
+                System.out.println("VER:"+e.getMessage());
+            }
+
+
         }else{
             Stage stage = StageManager.getPrimaryStage();
             double with=stage.getMaxWidth()/2;
             Toast.showToast(stage, "No hay productos en el carrito", 2000, with, 50);
+        }
+    }
+
+
+    public void mostrarVisorComprobante(Comprobante boleta) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main_comprobante.fxml"));
+            Parent visorRoot = loader.load();
+            MainComprobanteController controller = loader.getController();
+            controller.pasarDatos(boleta);
+            Alert alert = new Alert(Alert.AlertType.NONE);
+            alert.setTitle("Visualizar Comprobante");
+            alert.setHeaderText(null);
+            if (visorRoot instanceof javafx.scene.layout.Region) {
+                ((javafx.scene.layout.Region) visorRoot).setPrefSize(800, 600);
+            }
+            StackPane stackPane = new StackPane(visorRoot);
+            alert.getDialogPane().setContent(stackPane);
+            ButtonType closeButton = new ButtonType("Cerrar");
+            alert.getButtonTypes().add(closeButton);
+            alert.setOnCloseRequest(event -> alert.close());
+            alert.showAndWait().ifPresent(response -> {
+                if (response == closeButton) {
+                    alert.close();
+                }
+            });
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void print(Long idv){
+        Venta vt=daoV.findById(idv);
+        try {
+            PrinterManager printerManager = PrinterManager.getInstance();
+            PrintService printService = printerManager.getPrintService();
+            PrinterOutputStream printerOutputStream = new PrinterOutputStream(printService);
+            EscPos escpos = new EscPos(printerOutputStream);
+            Style titleStyle = new Style()
+                    .setJustification(EscPosConst.Justification.Center)
+                    .setBold(true)
+                    .setFontSize(Style.FontSize._2, Style.FontSize._2);
+            Style normal = new Style()
+                    .setJustification(EscPosConst.Justification.Left_Default);
+            Style center = new Style()
+                    .setJustification(EscPosConst.Justification.Center);
+            escpos.writeLF(titleStyle, "BOLETA DE VENTA");
+            escpos.writeLF(center, "Tienda Demo S.A.C.");
+            escpos.writeLF(center, "RUC: 12345678901");
+            escpos.writeLF(center, "Av. Principal 123 - Lima");
+            escpos.writeLF(center, "--------------------------------");
+//Datos del cliente
+            escpos.writeLF(normal, "Cliente: "+vt.getDniruc().getNombres());
+            escpos.writeLF(normal, "DNI: "+vt.getDniruc().getDniruc());
+            escpos.writeLF(normal, "Fecha: "+vt.getFechaGener()+"");
+            escpos.writeLF(normal, "--------------------------------");
+//Detalle
+            escpos.writeLF(normal, "Cant Descripción Importe");
+            int x=1;
+            for(VentaDetalle vd:vt.getDetalleVenta()) {
+                String punit=x+" "+vd.getIdProducto().getNombre()+" S/ "+vd.getSubtotal()+"";
+                escpos.writeLF(normal, punit);
+            }
+            escpos.writeLF(normal, "--------------------------------");
+            escpos.writeLF(normal, "TOTAL: S/"+vt.getPrecioTotal()+"");
+            escpos.writeLF(normal, "--------------------------------");
+//Agregar QR con los datos principales
+            String qrData = "Boleta N°001-000123 | Total: S/ "+vt.getPrecioTotal()+" | Fecha: "+vt.getFechaGener();
+            QRCode qrCode = new QRCode()
+                    .setJustification(EscPosConst.Justification.Center)
+                    .setErrorCorrectionLevel(QRCode.QRErrorCorrectionLevel.QR_ECLEVEL_M_Default)
+                    .setModel(QRCode.QRModel._1_Default);
+            escpos.write(qrCode, qrData);
+            escpos.feed(2);
+            escpos.writeLF(center, "Gracias por su compra!");
+            escpos.feed(6);
+//Corte total
+            escpos.cut(EscPos.CutMode.FULL);
+            escpos.close();
+            System.out.println("Boleta impresa correctamente.");
+            System.out.println("Impresión completada correctamente.");
+        } catch (IOException e) {
+            System.err.println("Error al inicializar la impresora: " + e.getMessage());
         }
     }
 
