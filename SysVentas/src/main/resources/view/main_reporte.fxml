@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:id="contenedor"
+           fx:controller="pe.edu.upeu.sysventas.controller.ReporteController"
+           prefWidth="1000" prefHeight="650"/>

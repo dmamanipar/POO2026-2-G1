@@ -124,6 +124,13 @@
             <artifactId>openpdf</artifactId>
             <version>2.0.3</version>
         </dependency>
+        <!-- ===== PDFBOX — solo para RENDERIZAR el PDF en el visor JavaFX ===== -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.4</version>
+        </dependency>
+
 
     </dependencies>
 
